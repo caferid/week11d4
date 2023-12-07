@@ -10,9 +10,17 @@ type Ttodo = {
 const Todos = () => {
   const [todo, setTodo] = useState<Ttodo[]>([])
   const [inp, setinp] = useState("")
-  const [edit, setedit] = useState("")
+  const [edit, setedit] = useState<number | null>(null)
   const addTodo = () => {
-    setTodo([...todo, { id: Date.now(), text: inp }])
+    if (edit) {
+       const index  = todo.findIndex(x=>x.id === edit)
+       todo[index].text = inp
+       setTodo([...todo])
+       setedit(null)
+    }
+    else{
+      setTodo([...todo, { id: Date.now(), text: inp }])
+    }
     setinp('') 
   }
   const deletelist = (id:number) => {
@@ -25,7 +33,7 @@ const Todos = () => {
     console.log(id);
     setinp(text)
     console.log(text);
-    setedit(edit)
+    setedit(id)
     console.log(edit);
      
     
@@ -36,7 +44,7 @@ const Todos = () => {
     <div>
       <h2>todo</h2>
       <input type="text" value={inp} onChange={(e) => setinp(e.target.value)} />
-      <button onClick={addTodo}>add</button>
+      <button onClick={addTodo}> {edit ? "edit" :"add" }</button>
       <button onClick={allDeleteTodo}>delete all</button>
       <ul>
         {todo.map((t, i) => (
